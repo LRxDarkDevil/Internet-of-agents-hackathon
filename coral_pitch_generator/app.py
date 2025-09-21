@@ -5,17 +5,19 @@ import json
 from agents.pitch_agent import PitchAgent
 from agents.design_agent import DesignAgent
 from agents.voice_agent import VoiceAgent
+from agents.presentation_agent import PresentationAgent
 
 def main():
     load_dotenv()
     st.title("Startup Pitch Generator")
     st.write("Enter your startup idea/topic below:")
     topic = st.text_input("Startup Idea", "AI in healthcare")
-    if st.button("Generate Pitch"):        
+    if st.button("Generate Pitch"):
         # Run agents
         pitch_agent = PitchAgent()
         design_agent = DesignAgent()
         voice_agent = VoiceAgent()
+        presentation_agent = PresentationAgent()
 
         pitch_json = pitch_agent.generate_pitch(topic)
         output_dir = os.path.join("output")
@@ -29,8 +31,9 @@ def main():
         voice_agent.narrate_pitch(pitch_json, audio_path)
 
         st.success("Pitch, logo, and narration generated!")
-        st.header("Pitch")
-        st.json(pitch_json)
+        st.header("Pitch (Formatted)")
+        formatted_pitch = presentation_agent.format_pitch(pitch_json)
+        st.markdown(formatted_pitch)
         st.header("Logo")
         st.image(logo_path)
         st.header("Narration")

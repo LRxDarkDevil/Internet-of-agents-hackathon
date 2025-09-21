@@ -1,15 +1,15 @@
 {
-  "problem": "Air shows are complex events requiring precise coordination between pilots, ground crews, and spectators. Traditional planning relies on manual processes, which can lead to inefficiencies, safety risks, and suboptimal audience experiences. Additionally, real-time adjustments during performances are challenging, and post-event analysis is often limited to subjective feedback.",
-  "solution": "An AI-powered platform that enhances air show planning, execution, and analysis. The solution includes: (1) AI-driven flight path optimization for maximum safety and spectacle, (2) real-time performance monitoring and adjustments using computer vision and sensor data, (3) predictive analytics for crowd management and safety, and (4) automated post-event performance analytics and audience engagement metrics.",
-  "market": "The global air show market is valued at over $500 million annually, with major events like the Paris Air Show and Farnborough International attracting hundreds of thousands of attendees. Key customers include air show organizers, aerobatic teams, military display teams, and aviation enthusiasts. The market is growing as air shows increasingly focus on technology and audience engagement.",
+  "problem": "Healthcare systems worldwide face inefficiencies, high costs, and diagnostic errors due to manual processes, data silos, and a shortage of medical professionals. Patients often experience delayed treatments, misdiagnoses, and fragmented care, while healthcare providers struggle with administrative burdens and burnout.",
+  "solution": "Our AI-powered healthcare platform leverages machine learning and natural language processing to automate diagnostics, personalize treatment plans, and streamline administrative workflows. Key features include: real-time medical imaging analysis, predictive analytics for patient outcomes, automated clinical documentation, and AI-assisted decision support for physicians.",
+  "market": "The global AI in healthcare market is projected to reach $136 billion by 2028, growing at a CAGR of 38.1%. Key segments include hospitals, clinics, telemedicine providers, and health insurers. Our initial focus is on radiology and chronic disease management, with expansion into oncology and genomics planned.",
   "business_model": {
     "revenue_streams": [
-      "Subscription-based SaaS for air show organizers",
-      "One-time licensing fees for event-specific AI tools",
-      "Premium analytics and insights for aerobatic teams",
-      "Partnerships with aviation tech companies for data monetization"
+      "Subscription-based SaaS model for healthcare providers",
+      "Pay-per-use pricing for diagnostic services",
+      "Licensing fees for AI models to pharmaceutical companies",
+      "Data analytics services for population health management"
     ],
-    "pricing_strategy": "Tiered pricing based on event size and feature requirements, with discounts for multi-event contracts.",
-    "partnerships": "Collaborations with aviation regulators, drone manufacturers, and event technology providers to enhance data access and compliance."
+    "pricing_strategy": "Tiered pricing based on facility size and feature access, with discounts for long-term contracts",
+    "partnerships": "Collaborations with EHR vendors, medical device manufacturers, and academic institutions for data access and validation"
   }
 }
