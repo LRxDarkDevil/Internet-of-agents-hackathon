@@ -1,3 +1,4 @@
 coral_pitch_analysis/agents/__pycache__/
 coral_pitch_generator/agents/__pycache__/
 coral_pitch_analysis/temp_uploads/
+coral_pitch_analysis/.env

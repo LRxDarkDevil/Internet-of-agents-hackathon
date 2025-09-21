@@ -5,3 +5,5 @@ requests>=2.31.0
 pathlib2>=2.3.7
 moviepy>=1.0.3
 mistralai>=0.4.0
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
