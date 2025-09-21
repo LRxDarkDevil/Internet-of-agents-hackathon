@@ -1,7 +1,9 @@
+# Load environment variables early
+from dotenv import load_dotenv
+load_dotenv()
 import os
 import sys
 import json
-from dotenv import load_dotenv
 # from coral_sdk import CoralSession  # Coral Protocol integration placeholder
 from agents.pitch_agent import PitchAgent
 from agents.design_agent import DesignAgent
