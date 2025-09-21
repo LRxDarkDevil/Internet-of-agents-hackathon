@@ -4,3 +4,4 @@ python-dotenv>=1.0.0
 requests>=2.31.0
 pathlib2>=2.3.7
 moviepy>=1.0.3
+mistralai>=0.4.0

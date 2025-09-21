@@ -6,7 +6,7 @@ Transcribes pitch presentations from audio files (MP3).
 import os
 import tempfile
 import requests
-from typing import Optional, Union
+from typing import Optional, Union, Dict, Any
 from pathlib import Path
 from dotenv import load_dotenv
 from elevenlabs.client import ElevenLabs
@@ -17,6 +17,13 @@ try:
     HAS_MOVIEPY = True
 except ImportError:
     HAS_MOVIEPY = False
+
+# Try to import Mistral analysis agent
+try:
+    from .mistral_analysis_agent import MistralAnalysisAgent
+    HAS_MISTRAL = True
+except ImportError:
+    HAS_MISTRAL = False
 
 # Load .env file
 load_dotenv()
@@ -31,6 +38,15 @@ class PitchAnalysisAgent:
             raise ValueError("ELEVENLABS_API_KEY missing in .env file")
         
         self.client = ElevenLabs(api_key=self.api_key)
+
+        # Initialize Mistral analysis agent (required)
+        if not HAS_MISTRAL:
+            raise ValueError("Mistral AI is required for pitch analysis. Please install mistralai package.")
+
+        try:
+            self.mistral_agent = MistralAnalysisAgent()
+        except Exception as e:
+            raise ValueError(f"Failed to initialize Mistral AI: {e}")
 
     def extract_audio_from_video(self, video_path: Union[str, Path]) -> Optional[str]:
         """
@@ -227,6 +243,51 @@ class PitchAnalysisAgent:
                     print(f"Cleaned up temporary audio file: {temp_audio_file}")
                 except Exception as e:
                     print(f"Failed to clean up temporary file: {e}")
+
+    def generate_comprehensive_analysis(self, pitch_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Generate comprehensive pitch analysis including Mistral AI evaluation.
+
+        Args:
+            pitch_data (dict): Complete pitch data including transcription and metadata
+
+        Returns:
+            dict: Analysis results with comprehensive evaluation
+        """
+        print("Starting comprehensive pitch analysis...")
+
+        # First ensure we have transcription if it's audio/video
+        if pitch_data.get('pitchType') in ['audio', 'video'] and 'pitch' not in pitch_data:
+            # Get transcription first
+            file_path = pitch_data.get('file')
+            if file_path:
+                transcription_result = self.analyze_pitch(file_path)
+                if transcription_result['success']:
+                    pitch_data['pitch'] = transcription_result['transcription']
+                else:
+                    return {
+                        "success": False,
+                        "error": "Failed to transcribe audio/video file",
+                        "analysis": None
+                    }
+
+        # Generate Mistral AI analysis (required)
+        try:
+            print("🤖 Generating Mistral AI analysis...")
+            mistral_result = self.mistral_agent.generate_comprehensive_analysis(pitch_data)
+
+            if mistral_result['success']:
+                return {
+                    "success": True,
+                    "analysis": mistral_result['analysis'],
+                    "method": "mistral_ai"
+                }
+            else:
+                raise ValueError(f"Mistral AI analysis failed: {mistral_result.get('error', 'Unknown error')}")
+
+        except Exception as e:
+            raise ValueError(f"Mistral AI analysis error: {e}")
+
 
 
 if __name__ == "__main__":
