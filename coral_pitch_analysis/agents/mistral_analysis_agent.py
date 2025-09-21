@@ -113,6 +113,8 @@ class MistralAnalysisAgent:
                     "improvements": ["Could use more specific data"],
                     "recommendations": ["Add more market research"]
                 }),
+                "response": mistral_analysis.get("response", "This pitch demonstrates strong potential with clear value proposition. Consider emphasizing the competitive advantages and market timing more prominently. The business model appears solid but could benefit from more detailed financial projections and customer acquisition strategy."),
+                "keynotes": mistral_analysis.get("keynotes", []) if pitch_type in ['audio', 'video'] else [],
                 "marketAnalysis": mistral_analysis.get("marketAnalysis", {
                     "size": "TBD",
                     "growth": "TBD",
@@ -154,6 +156,10 @@ class MistralAnalysisAgent:
         target_market = pitch_data.get('targetMarket', '')
         business_model = pitch_data.get('businessModel', '')
         funding_amount = pitch_data.get('fundingAmount', '')
+        pitch_type = pitch_data.get('pitchType', 'text')
+
+        # Determine pitch type for keynotes
+        is_audio_video = pitch_type in ['audio', 'video']
 
         prompt = f"""
 Analyze the following startup pitch and provide a comprehensive evaluation in JSON format:
@@ -165,6 +171,7 @@ Analyze the following startup pitch and provide a comprehensive evaluation in JS
 - Target Market: {target_market}
 - Business Model: {business_model}
 - Funding Amount: {funding_amount}
+- Pitch Type: {pitch_type}
 
 **PITCH CONTENT:**
 {pitch_content}
@@ -185,6 +192,8 @@ Please provide a detailed analysis in the following JSON structure:
     "improvements": (array of 2-4 areas for improvement),
     "recommendations": (array of 3-5 specific recommendations)
   }},
+  "response": (string - comprehensive response to the user including feedback, key points to highlight, improvements, ideas, and actionable insights, 3-5 sentences in English),
+  "keynotes": (array of 3-5 key points from the pitch - only include if this is audio/video content),
   "marketAnalysis": {{
     "size": (estimated market size),
     "growth": (market growth rate),
@@ -201,6 +210,14 @@ Focus on:
 4. Financial projections and viability
 5. Innovation and competitive advantage
 6. Overall pitch effectiveness
+
+**IMPORTANT:** Provide a comprehensive response in English (3-5 sentences) that includes:
+- Your overall assessment and feedback on the pitch
+- Key points the presenter should highlight when delivering this pitch
+- Specific improvements or suggestions to strengthen the pitch
+- Any innovative ideas or additional insights related to the business concept
+- Actionable advice for the presenter
+{"Additionally, if this is an audio or video pitch, include 3-5 key points that were effectively communicated." if is_audio_video else ""}
 
 Provide realistic scores based on the pitch content quality and completeness.
 """

@@ -6,6 +6,7 @@ Transcribes pitch presentations from audio files (MP3).
 import os
 import tempfile
 import requests
+import time
 from typing import Optional, Union, Dict, Any
 from pathlib import Path
 from dotenv import load_dotenv
@@ -27,6 +28,36 @@ except ImportError:
 
 # Load .env file
 load_dotenv()
+
+def retry_with_backoff(func, max_retries=3, initial_delay=1, backoff_factor=2, max_delay=60):
+    """
+    Retry a function with exponential backoff.
+
+    Args:
+        func: Function to retry
+        max_retries: Maximum number of retry attempts
+        initial_delay: Initial delay in seconds
+        backoff_factor: Factor to multiply delay by after each retry
+        max_delay: Maximum delay between retries
+
+    Returns:
+        Result of the function call
+    """
+    for attempt in range(max_retries + 1):
+        try:
+            return func()
+        except Exception as e:
+            if attempt == max_retries:
+                raise e
+
+            # Check if it's a rate limit error (429)
+            if hasattr(e, 'status_code') and e.status_code == 429:
+                delay = min(initial_delay * (backoff_factor ** attempt), max_delay)
+                print(f"Rate limit exceeded. Retrying in {delay} seconds... (Attempt {attempt + 1}/{max_retries})")
+                time.sleep(delay)
+            else:
+                # For other errors, don't retry
+                raise e
 
 class PitchAnalysisAgent:
     """Agent for transcribing pitch presentations from audio files."""
@@ -119,7 +150,7 @@ class PitchAnalysisAgent:
     
     def _transcribe_from_url(self, url: str, language_code: str) -> Optional[str]:
         """Transcribe audio from URL."""
-        try:
+        def _transcribe_url():
             # Download the file from URL
             response = requests.get(url, stream=True)
             response.raise_for_status()
@@ -152,13 +183,25 @@ class PitchAnalysisAgent:
                 # Clean up temporary file
                 os.unlink(temp_file_path)
 
+        try:
+            return retry_with_backoff(_transcribe_url, max_retries=3, initial_delay=2)
         except requests.RequestException as e:
             print(f"Error downloading file from URL: {e}")
             return None
+        except Exception as e:
+            print(f"URL transcription error after retries: {e}")
+            print("Note: This might be due to API rate limits or system overload.")
+
+            # Provide helpful fallback information
+            if hasattr(e, 'status_code') and e.status_code == 429:
+                print("💡 Fallback: Consider downloading the file locally and using local file upload")
+                return f"[TRANSCRIPTION UNAVAILABLE - API RATE LIMIT]\n\nUnable to transcribe audio from URL due to system overload. Please try again later or download the file and use local upload instead."
+            else:
+                return None
     
     def _transcribe_local_file(self, file_path: Path, language_code: str) -> Optional[str]:
         """Transcribe local audio file."""
-        try:
+        def _transcribe_file():
             with open(file_path, 'rb') as audio_file:
                 print(f"Processing audio file...")
                 transcription = self.client.speech_to_text.convert(
@@ -176,12 +219,22 @@ class PitchAnalysisAgent:
                     print("No speech detected in the audio file.")
                 return result
 
+        try:
+            return retry_with_backoff(_transcribe_file, max_retries=3, initial_delay=2)
         except FileNotFoundError:
             print(f"File not found: {file_path}")
             return None
         except Exception as e:
-            print(f"Transcription error: {e}")
-            return None
+            print(f"Transcription error after retries: {e}")
+            print("Note: This might be due to API rate limits or system overload.")
+            print("Consider trying again later or using a different audio file.")
+
+            # Provide helpful fallback information
+            if hasattr(e, 'status_code') and e.status_code == 429:
+                print("💡 Fallback: Consider using text input mode if audio transcription continues to fail")
+                return f"[TRANSCRIPTION UNAVAILABLE - API RATE LIMIT]\n\nUnable to transcribe audio due to system overload. Please try again later or use the text input option instead."
+            else:
+                return None
     
     def analyze_pitch(self, file_path: Union[str, Path], language_code: str = "eng") -> dict:
         """
