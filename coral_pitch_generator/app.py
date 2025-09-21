@@ -31,7 +31,7 @@ def main():
         voice_agent.narrate_pitch(pitch_json, audio_path)
 
         st.success("Pitch, logo, and narration generated!")
-        st.header("Pitch (Formatted)")
+        st.header("Pitch")
         formatted_pitch = presentation_agent.format_pitch(pitch_json)
         st.markdown(formatted_pitch)
         st.header("Logo")

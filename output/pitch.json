@@ -1,15 +1,15 @@
 {
-  "problem": "Healthcare systems worldwide face inefficiencies, high costs, and diagnostic errors due to manual processes, data silos, and a shortage of medical professionals. Patients often experience delayed treatments, misdiagnoses, and fragmented care, while healthcare providers struggle with administrative burdens and burnout.",
-  "solution": "Our AI-powered healthcare platform leverages machine learning and natural language processing to automate diagnostics, personalize treatment plans, and streamline administrative workflows. Key features include: real-time medical imaging analysis, predictive analytics for patient outcomes, automated clinical documentation, and AI-assisted decision support for physicians.",
-  "market": "The global AI in healthcare market is projected to reach $136 billion by 2028, growing at a CAGR of 38.1%. Key segments include hospitals, clinics, telemedicine providers, and health insurers. Our initial focus is on radiology and chronic disease management, with expansion into oncology and genomics planned.",
+  "problem": "The healthcare industry faces inefficiencies in diagnosis, treatment planning, and patient monitoring, leading to delayed care, misdiagnoses, and high operational costs. Clinicians are overwhelmed with data, and patients often experience fragmented care due to siloed systems.",
+  "solution": "An AI-powered healthcare platform that integrates with electronic health records (EHRs) to provide real-time, data-driven insights for clinicians. The platform uses machine learning to assist in early disease detection, personalized treatment recommendations, and predictive analytics for patient outcomes. It also offers automated administrative workflows to reduce clinician burnout.",
+  "market": {
+    "size": "The global AI in healthcare market is projected to reach $136 billion by 2027, growing at a CAGR of 38.4% (2020-2027). Key segments include hospitals, clinics, and telehealth providers.",
+    "target_customers": "Hospitals, clinics, private practices, and telehealth providers looking to improve diagnostic accuracy, operational efficiency, and patient outcomes.",
+    "competitive_advantage": "Superior integration with existing EHR systems, regulatory compliance (HIPAA/GDPR), and a focus on explainable AI to build clinician trust."
+  },
   "business_model": {
-    "revenue_streams": [
-      "Subscription-based SaaS model for healthcare providers",
-      "Pay-per-use pricing for diagnostic services",
-      "Licensing fees for AI models to pharmaceutical companies",
-      "Data analytics services for population health management"
-    ],
-    "pricing_strategy": "Tiered pricing based on facility size and feature access, with discounts for long-term contracts",
-    "partnerships": "Collaborations with EHR vendors, medical device manufacturers, and academic institutions for data access and validation"
+    "revenue_model": "Subscription-based SaaS pricing (per provider or per patient), with tiered plans based on features and scale. Additional revenue from premium analytics and consulting services.",
+    "key_partners": "Healthcare providers, EHR vendors, AI research institutions, and regulatory bodies.",
+    "cost_structure": "R&D for AI models, cloud infrastructure, compliance, and customer support.",
+    "growth_strategy": "Pilot programs with early adopters, partnerships with EHR providers, and targeted marketing to high-need specialties (e.g., radiology, cardiology)."
   }
 }
