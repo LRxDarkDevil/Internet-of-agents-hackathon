@@ -26,6 +26,13 @@ try:
 except ImportError:
     HAS_MISTRAL = False
 
+# Try to import Voice agent
+try:
+    from .voice_agent import VoiceAgent
+    HAS_VOICE = True
+except ImportError:
+    HAS_VOICE = False
+
 # Load .env file
 load_dotenv()
 
@@ -78,6 +85,18 @@ class PitchAnalysisAgent:
             self.mistral_agent = MistralAnalysisAgent()
         except Exception as e:
             raise ValueError(f"Failed to initialize Mistral AI: {e}")
+
+        # Initialize Voice agent (optional)
+        if not HAS_VOICE:
+            print("⚠️ Voice agent not available. Audio generation will be disabled.")
+            self.voice_agent = None
+        else:
+            try:
+                self.voice_agent = VoiceAgent()
+                print("Voice agent initialized successfully!")
+            except Exception as e:
+                print(f"Failed to initialize voice agent: {e}")
+                self.voice_agent = None
 
     def extract_audio_from_video(self, video_path: Union[str, Path]) -> Optional[str]:
         """
@@ -326,13 +345,29 @@ class PitchAnalysisAgent:
 
         # Generate Mistral AI analysis (required)
         try:
-            print("🤖 Generating Mistral AI analysis...")
+            print("Generating Mistral AI analysis...")
             mistral_result = self.mistral_agent.generate_comprehensive_analysis(pitch_data)
 
             if mistral_result['success']:
+                analysis = mistral_result['analysis']
+
+                # Generate audio for the AI response
+                if self.voice_agent:
+                    try:
+                        audio_path = os.path.join(os.path.dirname(__file__), '..', 'temp_uploads', f"ai_response_{analysis.get('id', 'unknown')}.mp3")
+                        os.makedirs(os.path.dirname(audio_path), exist_ok=True)
+                        audio_success = self.generate_response_audio(analysis, audio_path)
+                        if audio_success:
+                            analysis['responseAudioPath'] = audio_path
+                            print(f"✅ AI response audio generated: {audio_path}")
+                        else:
+                            print("⚠️ Failed to generate AI response audio")
+                    except Exception as e:
+                        print(f"⚠️ Error setting up audio generation: {e}")
+
                 return {
                     "success": True,
-                    "analysis": mistral_result['analysis'],
+                    "analysis": analysis,
                     "method": "mistral_ai"
                 }
             else:
@@ -340,6 +375,36 @@ class PitchAnalysisAgent:
 
         except Exception as e:
             raise ValueError(f"Mistral AI analysis error: {e}")
+
+    def generate_response_audio(self, analysis: Dict[str, Any], output_path: str) -> bool:
+        """
+        Generate audio narration for the AI response using ElevenLabs.
+
+        Args:
+            analysis (dict): The complete analysis result containing the AI response
+            output_path (str): Path where the audio file should be saved
+
+        Returns:
+            bool: True if audio generation was successful, False otherwise
+        """
+        if not self.voice_agent:
+            print("❌ Voice agent not available. Cannot generate audio.")
+            return False
+
+        # Extract the AI response from the analysis
+        response_text = analysis.get('response', '')
+        if not response_text:
+            print("❌ No AI response found in analysis. Cannot generate audio.")
+            return False
+
+        try:
+            print(f"🎵 Generating audio for AI response...")
+            self.voice_agent.narrate_response(response_text, output_path)
+            print(f"✅ AI response audio generated: {output_path}")
+            return True
+        except Exception as e:
+            print(f"❌ Error generating response audio: {e}")
+            return False
 
 
 
