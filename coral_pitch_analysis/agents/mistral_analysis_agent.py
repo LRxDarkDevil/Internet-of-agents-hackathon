@@ -83,18 +83,45 @@ class MistralAnalysisAgent:
 
             # Parse the JSON response from Mistral
             try:
+                # Clean the response text to remove potential formatting issues
+                cleaned_text = analysis_text.strip()
+
                 # Try to extract JSON from the response
-                json_start = analysis_text.find('{')
-                json_end = analysis_text.rfind('}') + 1
+                json_start = cleaned_text.find('{')
+                json_end = cleaned_text.rfind('}') + 1
+
                 if json_start != -1 and json_end > json_start:
-                    json_str = analysis_text[json_start:json_end]
+                    json_str = cleaned_text[json_start:json_end]
+                    # Clean up common JSON formatting issues
+                    json_str = json_str.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
+                    # Remove any trailing commas before closing braces
+                    json_str = json_str.replace(',}', '}').replace(',]', ']')
                     mistral_analysis = json.loads(json_str)
                 else:
                     # If no JSON found, try to parse the entire response as JSON
-                    mistral_analysis = json.loads(analysis_text)
+                    # Clean up the entire response as well
+                    cleaned_full = cleaned_text.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
+                    cleaned_full = cleaned_full.replace(',}', '}').replace(',]', ']')
+                    mistral_analysis = json.loads(cleaned_full)
             except (json.JSONDecodeError, ValueError) as e:
-                # No fallback - fail if Mistral doesn't return proper JSON
-                raise ValueError(f"Mistral API did not return valid JSON. Response: {analysis_text[:500]}... Error: {e}")
+                # Enhanced error reporting for debugging
+                print(f"ERROR: JSON parsing failed. Raw response: {analysis_text[:1000]}...")
+                print(f"ERROR: JSON parsing error details: {e}")
+                # Try one more fallback - look for specific JSON patterns
+                try:
+                    import re
+                    # Look for JSON-like structure with regex
+                    json_match = re.search(r'\{.*\}', analysis_text, re.DOTALL)
+                    if json_match:
+                        fallback_json = json_match.group(0)
+                        fallback_json = fallback_json.replace('\n', ' ').replace('\r', ' ').replace('\t', ' ')
+                        fallback_json = fallback_json.replace(',}', '}').replace(',]', ']')
+                        mistral_analysis = json.loads(fallback_json)
+                        print("SUCCESS: JSON extracted using regex fallback")
+                    else:
+                        raise ValueError(f"Mistral API did not return valid JSON. Response: {analysis_text[:500]}... Error: {e}")
+                except Exception as fallback_error:
+                    raise ValueError(f"Mistral API did not return valid JSON. Response: {analysis_text[:500]}... Original error: {e}, Fallback error: {fallback_error}")
 
             # Structure the complete analysis
             complete_analysis = {

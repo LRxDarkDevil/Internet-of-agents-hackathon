@@ -76,9 +76,9 @@ def initialize_agents():
     try:
         pitch_agent = PitchAnalysisAgent()
         mistral_agent = MistralAnalysisAgent()
-        print("✅ All agents initialized successfully")
+        print("SUCCESS: All agents initialized successfully")
     except Exception as e:
-        print(f"❌ Failed to initialize agents: {e}")
+        print(f"ERROR: Failed to initialize agents: {e}")
         raise
 
 # Initialize agents on startup
