@@ -1,7 +1,5 @@
-coral-sdk
+streamlit
 mistralai
 requests
-elevenlabs
 pillow
 python-dotenv
-google-generativeai
