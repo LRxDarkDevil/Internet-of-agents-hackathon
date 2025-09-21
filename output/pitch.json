@@ -1,15 +1,13 @@
 {
-  "problem": "Air shows are complex events requiring precise coordination between pilots, ground crews, and spectators. Traditional planning relies on manual processes, which can lead to inefficiencies, safety risks, and suboptimal audience experiences. Additionally, real-time adjustments during performances are challenging, and post-event analysis is often limited to subjective feedback.",
-  "solution": "An AI-powered platform that enhances air show planning, execution, and analysis. The solution includes: (1) AI-driven flight path optimization for maximum safety and spectacle, (2) real-time performance monitoring and adjustments using computer vision and sensor data, (3) predictive analytics for crowd management and safety, and (4) automated post-event performance analytics and audience engagement metrics.",
-  "market": "The global air show market is valued at over $500 million annually, with major events like the Paris Air Show and Farnborough International attracting hundreds of thousands of attendees. Key customers include air show organizers, aerobatic teams, military display teams, and aviation enthusiasts. The market is growing as air shows increasingly focus on technology and audience engagement.",
+  "problem": "Healthcare systems are overwhelmed with administrative inefficiencies, diagnostic errors, and delayed treatments. Clinicians spend excessive time on paperwork, patients face long wait times, and early disease detection remains challenging due to limited resources and human error.",
+  "solution": "An AI-powered healthcare platform that automates administrative tasks, enhances diagnostic accuracy, and personalizes treatment plans. The platform integrates with existing hospital systems to provide real-time insights, predictive analytics, and decision support tools for clinicians.",
+  "market": {
+    "size": "The global AI in healthcare market is projected to reach $136 billion by 2027, growing at a CAGR of 38.1% (2020-2027). Key segments include hospitals, clinics, and telemedicine providers.",
+    "target_customers": "Hospitals, clinics, telemedicine providers, and individual healthcare practitioners looking to improve efficiency, reduce costs, and enhance patient outcomes."
+  },
   "business_model": {
-    "revenue_streams": [
-      "Subscription-based SaaS for air show organizers",
-      "One-time licensing fees for event-specific AI tools",
-      "Premium analytics and insights for aerobatic teams",
-      "Partnerships with aviation tech companies for data monetization"
-    ],
-    "pricing_strategy": "Tiered pricing based on event size and feature requirements, with discounts for multi-event contracts.",
-    "partnerships": "Collaborations with aviation regulators, drone manufacturers, and event technology providers to enhance data access and compliance."
+    "revenue_model": "Subscription-based SaaS model with tiered pricing based on features and scale. Additional revenue streams include premium analytics, custom AI model training, and API access for third-party integrations.",
+    "key_partners": "Healthcare providers, electronic health record (EHR) vendors, and AI research institutions.",
+    "competitive_advantage": "Superior accuracy in diagnostics, seamless EHR integration, and a focus on regulatory compliance (HIPAA, GDPR)."
   }
 }
