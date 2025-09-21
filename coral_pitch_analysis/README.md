@@ -1,11 +1,12 @@
 # Coral Pitch Analysis
 
-A speech-to-text tool that transcribes audio pitch presentations using ElevenLabs.
+A speech-to-text tool that transcribes audio and video pitch presentations using ElevenLabs.
 
 ## Features
 
 - 🎵 **Audio Transcription**: Convert audio files (MP3, WAV, M4A, OGG) to text using ElevenLabs
-- 🌐 **URL Support**: Transcribe audio files from URLs or local uploads
+- 🎬 **Video Transcription**: Extract audio from video files (MP4, AVI, MOV, MKV) and transcribe using ElevenLabs
+-  **URL Support**: Transcribe audio/video files from URLs or local uploads
 - 📱 **Streamlit Interface**: Easy-to-use web interface for testing
 - 📊 **Basic Statistics**: Word count and character count
 
@@ -36,6 +37,10 @@ streamlit run pitch_analysis_test.py
 4. View transcription results
 5. Download results as JSON
 
+### Supported file formats:
+- **Audio**: MP3, WAV, M4A, OGG
+- **Video**: MP4, AVI, MOV, MKV (audio extraction + transcription)
+
 ### Using the Agent Directly
 
 ```python
@@ -44,8 +49,11 @@ from agents.pitch_analysis_agent import PitchAnalysisAgent
 # Initialize agent
 agent = PitchAnalysisAgent()
 
-# Transcribe a local file
+# Transcribe a local audio file
 result = agent.analyze_pitch("path/to/pitch.mp3")
+
+# Transcribe a local video file
+result = agent.analyze_pitch("path/to/pitch.mp4")
 
 # Transcribe from URL
 result = agent.analyze_pitch("https://example.com/pitch.mp3")
@@ -61,9 +69,12 @@ The transcription returns a dictionary with:
 {
   "success": true,
   "transcription": "Transcribed text...",
-  "file_path": "path/to/file.mp3"
+  "file_path": "path/to/file.mp3",
+  "is_video": false
 }
 ```
+
+For video files, the `is_video` field will be `true`.
 
 ## Requirements
 
